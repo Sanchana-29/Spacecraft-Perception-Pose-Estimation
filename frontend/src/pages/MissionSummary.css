@@ -1,0 +1,15 @@
+.mission-page{
+
+    height:100%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+    padding:20px;
+
+    overflow:auto;
+
+}

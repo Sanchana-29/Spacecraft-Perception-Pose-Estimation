@@ -1,0 +1,63 @@
+.mission-statistics{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:18px;
+
+}
+
+.stat-card{
+
+    background:#131c2e;
+
+    border:1px solid #26334d;
+
+    border-radius:12px;
+
+    padding:18px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    transition:.3s;
+
+}
+
+.stat-card:hover{
+
+    border-color:#4f8cff;
+
+    transform:translateY(-2px);
+
+}
+
+.stat-icon{
+
+    font-size:26px;
+
+    color:#60a5fa;
+
+}
+
+.stat-card span{
+
+    color:#8ca8d8;
+
+    font-size:13px;
+
+}
+
+.stat-card h2{
+
+    color:white;
+
+    margin-top:6px;
+
+    font-size:24px;
+
+}

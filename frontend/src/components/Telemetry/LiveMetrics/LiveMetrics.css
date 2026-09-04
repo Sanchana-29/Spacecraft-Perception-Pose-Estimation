@@ -1,0 +1,63 @@
+.live-metrics{
+
+    display:grid;
+
+    grid-template-columns:repeat(6,1fr);
+
+    gap:18px;
+
+}
+
+.metric-card{
+
+    background:#131c2e;
+
+    border:1px solid #26334d;
+
+    border-radius:12px;
+
+    padding:18px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    transition:.3s;
+
+}
+
+.metric-card:hover{
+
+    border-color:#4f8cff;
+
+    transform:translateY(-2px);
+
+}
+
+.metric-icon{
+
+    font-size:24px;
+
+    color:#60a5fa;
+
+}
+
+.metric-card span{
+
+    color:#8ca8d8;
+
+    font-size:13px;
+
+}
+
+.metric-card h2{
+
+    color:white;
+
+    margin-top:6px;
+
+    font-size:22px;
+
+}

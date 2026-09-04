@@ -1,0 +1,81 @@
+.display-settings{
+
+    background:#131c2e;
+
+    border:1px solid #26334d;
+
+    border-radius:12px;
+
+    padding:20px;
+
+}
+
+.display-settings h2{
+
+    color:white;
+
+    margin-bottom:20px;
+
+}
+
+.settings-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:20px;
+
+}
+
+.checkbox-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    color:white;
+
+}
+
+.checkbox-item input{
+
+    width:18px;
+
+    height:18px;
+
+}
+
+.setting-item{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+}
+
+.setting-item label{
+
+    color:#8ca8d8;
+
+    font-size:13px;
+
+}
+
+.setting-item select{
+
+    background:#1b2438;
+
+    color:white;
+
+    border:1px solid #31415d;
+
+    border-radius:8px;
+
+    padding:10px;
+
+}

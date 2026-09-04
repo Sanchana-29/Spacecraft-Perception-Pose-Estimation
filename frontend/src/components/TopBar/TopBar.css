@@ -1,0 +1,24 @@
+.topbar-container {
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 0 25px;
+
+    background: #111827;
+    color: white;
+}
+
+.project-title {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.time-section {
+    display: flex;
+    gap: 25px;
+    font-size: 16px;
+    font-weight: 500;
+}

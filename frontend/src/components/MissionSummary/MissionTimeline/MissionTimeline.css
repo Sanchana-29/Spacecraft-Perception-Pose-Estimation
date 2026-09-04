@@ -1,0 +1,109 @@
+.mission-timeline{
+
+    background:#131c2e;
+
+    border:1px solid #26334d;
+
+    border-radius:12px;
+
+    padding:20px;
+
+}
+
+.mission-timeline h2{
+
+    color:white;
+
+    margin-bottom:20px;
+
+}
+
+.timeline{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:0;
+
+}
+
+.timeline-card{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+
+    padding:14px;
+
+    background:#1b2438;
+
+    border:1px solid #31415d;
+
+    border-radius:10px;
+
+}
+
+.timeline-icon{
+
+    width:46px;
+
+    height:46px;
+
+    border-radius:50%;
+
+    background:#2563eb;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:white;
+
+    font-size:18px;
+
+}
+
+.timeline-info{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.timeline-info h3{
+
+    margin:0;
+
+    color:white;
+
+    font-size:16px;
+
+}
+
+.timeline-info span{
+
+    margin-top:4px;
+
+    color:#8ca8d8;
+
+    font-size:13px;
+
+}
+
+.timeline-line{
+
+    width:2px;
+
+    height:25px;
+
+    background:#2563eb;
+
+    margin-left:22px;
+
+}

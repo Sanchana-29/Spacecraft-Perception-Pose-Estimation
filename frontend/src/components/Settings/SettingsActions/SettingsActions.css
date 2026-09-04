@@ -1,0 +1,75 @@
+.settings-actions{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:20px;
+
+}
+
+.action-btn{
+
+    background:#1b2438;
+
+    color:white;
+
+    border:1px solid #31415d;
+
+    border-radius:10px;
+
+    padding:18px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:10px;
+
+    font-size:15px;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.action-btn:hover{
+
+    transform:translateY(-2px);
+
+}
+
+.save:hover{
+
+    background:#16a34a;
+
+    border-color:#16a34a;
+
+}
+
+.reset:hover{
+
+    background:#dc2626;
+
+    border-color:#dc2626;
+
+}
+
+.export:hover{
+
+    background:#2563eb;
+
+    border-color:#2563eb;
+
+}
+
+.import:hover{
+
+    background:#9333ea;
+
+    border-color:#9333ea;
+
+}

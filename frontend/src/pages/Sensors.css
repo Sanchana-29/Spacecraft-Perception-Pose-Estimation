@@ -1,0 +1,24 @@
+.sensors-page {
+  height: 100%;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 20px;
+
+  padding: 20px;
+
+  overflow: hidden;
+}
+
+.sensor-viewer{
+
+    flex:1;
+}
+
+.bottom-panels{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}

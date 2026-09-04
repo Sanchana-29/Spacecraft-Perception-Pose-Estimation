@@ -1,0 +1,170 @@
+.layout {
+  display: grid;
+  height: 100vh;
+  background: #0b1020;
+  color: white;
+  overflow: hidden;
+  transition: grid-template-columns 0.25s ease;
+}
+
+/* =========================
+   SIDEBAR CLOSED
+   ========================= */
+
+.layout.sidebar-collapsed.with-inspector {
+  grid-template-columns:
+    0px
+    minmax(0, 1fr)
+    300px;
+
+  grid-template-areas:
+    "topbar topbar topbar"
+    "sidebar content inspector"
+    "footer footer footer";
+}
+
+.layout.sidebar-collapsed.without-inspector {
+  grid-template-columns:
+    0px
+    minmax(0, 1fr);
+
+  grid-template-areas:
+    "topbar topbar"
+    "sidebar content"
+    "footer footer";
+}
+
+
+/* =========================
+   SIDEBAR OPEN
+   ========================= */
+
+.layout.sidebar-expanded.with-inspector {
+  grid-template-columns:
+    260px
+    minmax(0, 1fr)
+    300px;
+
+  grid-template-areas:
+    "topbar topbar topbar"
+    "sidebar content inspector"
+    "footer footer footer";
+}
+
+.layout.sidebar-expanded.without-inspector {
+  grid-template-columns:
+    260px
+    minmax(0, 1fr);
+
+  grid-template-areas:
+    "topbar topbar"
+    "sidebar content"
+    "footer footer";
+}
+
+
+/* =========================
+   ROWS
+   ========================= */
+
+.layout.with-footer {
+  grid-template-rows:
+    70px
+    minmax(0, 1fr)
+    60px;
+}
+
+.layout.without-footer {
+  grid-template-rows:
+    70px
+    minmax(0, 1fr);
+}
+
+
+/* =========================
+   TOP BAR
+   ========================= */
+
+.topbar {
+  grid-area: topbar;
+  border-bottom: 1px solid #1f2b45;
+  min-width: 0;
+  z-index: 20;
+}
+
+
+/* =========================
+   SIDEBAR
+   ========================= */
+
+.sidebar {
+  grid-area: sidebar;
+  min-width: 0;
+  overflow: visible;
+  z-index: 30;
+}
+
+/* When sidebar is closed,
+   it floats above simulation */
+.layout.sidebar-collapsed .sidebar {
+  position: absolute;
+
+  top: 84px;
+  left: 8px;
+
+  width: 48px;
+  height: 48px;
+
+  border: none;
+
+  overflow: visible;
+
+  z-index: 30;
+}
+
+/* When sidebar is open,
+   it becomes normal grid column */
+.layout.sidebar-expanded .sidebar {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-right: 1px solid #1f2b45;
+}
+
+
+/* =========================
+   CONTENT / SIMULATION
+   ========================= */
+
+.content {
+  grid-area: content;
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+
+/* =========================
+   OBJECT INSPECTOR
+   ========================= */
+
+.inspector {
+  grid-area: inspector;
+  min-width: 0;
+  overflow: hidden;
+  border-left: 1px solid #1f2b45;
+}
+
+
+/* =========================
+   FOOTER
+   ========================= */
+
+.footer {
+  grid-area: footer;
+  min-width: 0;
+  overflow: hidden;
+  border-top: 1px solid #1f2b45;
+}

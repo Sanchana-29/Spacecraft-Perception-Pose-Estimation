@@ -1,0 +1,65 @@
+.report-actions{
+
+    background:#131c2e;
+
+    border:1px solid #26334d;
+
+    border-radius:12px;
+
+    padding:20px;
+
+}
+
+.report-actions h2{
+
+    color:white;
+
+    margin-bottom:20px;
+
+}
+
+.actions-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:18px;
+
+}
+
+.action-btn{
+
+    background:#1b2438;
+
+    border:1px solid #31415d;
+
+    border-radius:10px;
+
+    color:white;
+
+    padding:18px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+    transition:.3s;
+
+}
+
+.action-btn:hover{
+
+    background:#2563eb;
+
+    border-color:#2563eb;
+
+}

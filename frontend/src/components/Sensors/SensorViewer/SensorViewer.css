@@ -1,0 +1,459 @@
+.sensor-viewer {
+  flex: 1;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  border: 1px solid #24324d;
+  border-radius: 14px;
+
+  background: #111a2c;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.viewer-header {
+  height: 62px;
+  min-height: 62px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 20px;
+
+  box-sizing: border-box;
+
+  border-bottom: 1px solid #263550;
+
+  background: #182238;
+}
+
+.viewer-header h2 {
+  margin: 0;
+
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.viewer-subtitle {
+  display: block;
+
+  margin-top: 3px;
+
+  font-size: 11px;
+
+  color: #7f91ad;
+}
+
+
+/* =========================
+   LIVE STATUS
+========================= */
+
+.live-status {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  color: #7dd3fc;
+}
+
+.status-dot {
+  width: 9px;
+  height: 9px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: #4ade80;
+}
+
+
+/* =========================
+   MAIN VIEWER
+========================= */
+
+.viewer-content {
+  position: relative;
+
+  flex: 1;
+  min-height: 0;
+
+  overflow: hidden;
+
+  background: #060b14;
+}
+
+
+/* =========================
+   3D COMMON
+========================= */
+
+.sensor-3d-view,
+.thermal-3d-view,
+.lidar-3d-view {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+}
+
+.sensor-3d-view canvas,
+.thermal-3d-view canvas,
+.lidar-3d-view canvas {
+  display: block;
+
+  width: 100% !important;
+  height: 100% !important;
+}
+
+
+/* =========================
+   RGB-D OVERLAY
+========================= */
+
+.sensor-overlay {
+  position: absolute;
+
+  top: 14px;
+
+  padding: 5px 8px;
+
+  border: 1px solid #344866;
+
+  background: rgba(7, 13, 24, 0.8);
+
+  font-size: 10px;
+
+  color: #9db2ce;
+
+  pointer-events: none;
+}
+
+.sensor-overlay.top-left {
+  left: 14px;
+}
+
+.sensor-overlay.top-right {
+  right: 14px;
+}
+
+
+.target-detection-box {
+  position: absolute;
+
+  left: 50%;
+  top: 43%;
+
+  width: 145px;
+  height: 85px;
+
+  transform: translate(-50%, -50%);
+
+  border: 1px solid #60a5fa;
+
+  pointer-events: none;
+}
+
+.target-detection-box span {
+  position: absolute;
+
+  left: 0;
+  top: -20px;
+
+  padding: 3px 6px;
+
+  font-size: 9px;
+
+  color: #60a5fa;
+
+  background: #08111f;
+
+  border: 1px solid #60a5fa;
+}
+
+
+.depth-readout {
+  position: absolute;
+
+  right: 18px;
+  bottom: 18px;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 8px 12px;
+
+  border: 1px solid #263550;
+
+  background: rgba(7, 13, 24, 0.9);
+}
+
+.depth-readout span,
+.temperature-readout span,
+.lidar-readout span {
+  font-size: 9px;
+
+  color: #7589a5;
+}
+
+.depth-readout strong,
+.temperature-readout strong,
+.lidar-readout strong {
+  margin-top: 3px;
+
+  font-size: 15px;
+
+  color: #dbe7f5;
+}
+
+
+.crosshair {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  transform: translate(-50%, -50%);
+
+  font-size: 22px;
+
+  color: rgba(255, 255, 255, 0.35);
+
+  pointer-events: none;
+}
+
+
+/* =========================
+   STEREO
+========================= */
+
+.stereo-3d-view {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  width: 100%;
+  height: 100%;
+
+  gap: 2px;
+
+  background: #263550;
+}
+
+.stereo-camera-view {
+  position: relative;
+
+  min-width: 0;
+  min-height: 0;
+
+  background: #070d18;
+}
+
+.camera-label {
+  position: absolute;
+
+  z-index: 5;
+
+  top: 12px;
+  left: 14px;
+
+  padding: 4px 7px;
+
+  border: 1px solid #344866;
+
+  background: rgba(7, 13, 24, 0.85);
+
+  font-size: 9px;
+
+  color: #9db2ce;
+}
+
+
+/* =========================
+   THERMAL
+========================= */
+
+.thermal-3d-view {
+  background:
+    radial-gradient(
+      circle at center,
+      #39271f,
+      #120f13 60%,
+      #060b14
+    );
+}
+
+.thermal-label {
+  position: absolute;
+
+  top: 14px;
+  left: 14px;
+
+  padding: 5px 8px;
+
+  border: 1px solid #5a4035;
+
+  background: rgba(12, 9, 13, 0.8);
+
+  font-size: 10px;
+
+  color: #d3a48c;
+}
+
+.temperature-readout {
+  position: absolute;
+
+  right: 18px;
+  bottom: 18px;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 8px 12px;
+
+  border: 1px solid #4a3730;
+
+  background: rgba(12, 9, 13, 0.9);
+}
+
+
+/* =========================
+   LIDAR
+========================= */
+
+.lidar-3d-view {
+  background: #050b13;
+}
+
+.lidar-label {
+  position: absolute;
+
+  top: 14px;
+  left: 14px;
+
+  padding: 5px 8px;
+
+  border: 1px solid #344866;
+
+  background: rgba(7, 13, 24, 0.85);
+
+  font-size: 10px;
+
+  color: #9db2ce;
+}
+
+.lidar-readout {
+  position: absolute;
+
+  right: 18px;
+  bottom: 18px;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 8px 12px;
+
+  border: 1px solid #263550;
+
+  background: rgba(7, 13, 24, 0.9);
+}
+
+
+/* =========================
+   SENSOR METRICS
+========================= */
+
+.sensor-metrics {
+  height: 58px;
+  min-height: 58px;
+
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  box-sizing: border-box;
+
+  border-top: 1px solid #263550;
+
+  background: #111a2c;
+}
+
+.sensor-metrics div {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  gap: 3px;
+
+  padding: 6px 16px;
+
+  box-sizing: border-box;
+
+  border-right: 1px solid #263550;
+}
+
+.sensor-metrics div:last-child {
+  border-right: none;
+}
+
+.sensor-metrics span {
+  font-size: 9px;
+
+  color: #71839f;
+
+  letter-spacing: 0.6px;
+}
+
+.sensor-metrics strong {
+  font-size: 13px;
+
+  line-height: 16px;
+
+  color: #dbe7f5;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 800px) {
+  .sensor-metrics {
+    grid-template-columns: repeat(2, 1fr);
+
+    height: 70px;
+    min-height: 70px;
+  }
+
+  .stereo-3d-view {
+    grid-template-columns: 1fr;
+  }
+}
+.sensor-camera-canvas {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.sensor-camera-canvas canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}

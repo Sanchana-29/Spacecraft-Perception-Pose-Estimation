@@ -1,0 +1,87 @@
+.pose-pipeline{
+
+    background:#131c2e;
+
+    border:1px solid #26334d;
+
+    border-radius:12px;
+
+    padding:18px;
+
+    height:520px;
+
+}
+
+.pose-pipeline h3{
+
+    color:white;
+
+    margin-bottom:20px;
+
+}
+
+.pipeline-list{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+.pipeline-card{
+
+    width:180px;
+
+    background:#1b2438;
+
+    border:1px solid #31415d;
+
+    border-radius:10px;
+
+    padding:15px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    transition:.3s;
+
+}
+
+.pipeline-card:hover{
+
+    border-color:#4f8cff;
+
+    transform:translateY(-2px);
+
+}
+
+.pipeline-icon{
+
+    color:#60a5fa;
+
+    font-size:18px;
+
+}
+
+.pipeline-card span{
+
+    color:white;
+
+    font-weight:600;
+
+}
+
+.pipeline-arrow{
+
+    color:#60a5fa;
+
+    font-size:22px;
+
+}
