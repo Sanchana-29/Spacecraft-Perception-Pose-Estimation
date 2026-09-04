@@ -1,4 +1,32 @@
+@"
+# Dependencies
 node_modules/
+
+# Python cache
 __pycache__/
 *.pyc
+
+# Environment files
+.env
+.env.*
+
+# Build output
+dist/
+build/
+
+# Vite
+.vite/
+*.timestamp-*
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.vscode/
+
+# Project model - temporarily excluded from Git
 frontend/public/models/satellite.glb
+"@ | Set-Content .gitignore
