@@ -7,205 +7,155 @@ import {
 
 const SimulationContext = createContext();
 
+const CHASER_ORBIT_X = 4.8;
+const CHASER_ORBIT_Z = 5.5;
+
+const TARGET_ORBIT_X = 6.2;
+const TARGET_ORBIT_Z = 7.0;
+
+const INITIAL_CHASER_POSITION = {
+  x: CHASER_ORBIT_X,
+  y: 0,
+  z: 0,
+};
+
+const INITIAL_TARGET_POSITION = {
+  x: TARGET_ORBIT_X,
+  y: 0,
+  z: 0,
+};
+
 export function SimulationProvider({ children }) {
+  const [selectedObject, setSelectedObject] = useState(null);
 
-  // ==========================================
-  // SELECTED OBJECT
-  // ==========================================
+  const [isRunning, setIsRunning] = useState(false);
+  const [simulationSpeed, setSimulationSpeed] = useState(1);
 
-  const [selectedObject, setSelectedObject] =
-    useState(null);
+  const [missionTime, setMissionTime] = useState(0);
 
+  const [resetKey, setResetKey] = useState(0);
 
-  // ==========================================
-  // SIMULATION
-  // ==========================================
+  const [chaserPosition, setChaserPosition] = useState(
+    INITIAL_CHASER_POSITION
+  );
 
-  const [isRunning, setIsRunning] =
-    useState(false);
+  const [targetPosition, setTargetPosition] = useState(
+    INITIAL_TARGET_POSITION
+  );
 
-  const [simulationSpeed, setSimulationSpeed] =
-    useState(1);
-
-
-  // ==========================================
-  // MISSION TIME
-  // ==========================================
-
-  const [missionTime, setMissionTime] =
-    useState(0);
-
-
-  // ==========================================
-  // RESET
-  // ==========================================
-
-  const [resetKey, setResetKey] =
-    useState(0);
-
-
-  // ==========================================
-  // CHASER POSITION
-  // ==========================================
-
-  const [chaserPosition, setChaserPosition] =
-    useState({
-      x: 4.8,
-      y: 0,
-      z: 0,
-    });
-
-
-  // ==========================================
-  // TARGET POSITION
-  // ==========================================
-
-  const [targetPosition, setTargetPosition] =
-    useState({
-      x: 6.2,
-      y: 0,
-      z: 0,
-    });
-
-
-  // ==========================================
-  // CENTRAL SIMULATION UPDATE
-  // ==========================================
+  /*
+   * =========================
+   * SINGLE SIMULATION LOOP
+   * =========================
+   *
+   * Context is now responsible for:
+   * - Mission time
+   * - Chaser movement
+   * - Target movement
+   *
+   * Spacecraft components will
+   * only follow these positions.
+   */
 
   useEffect(() => {
-
     if (!isRunning) return;
 
-
     const interval = setInterval(() => {
+      const speed = simulationSpeed;
 
-      setMissionTime((prev) =>
-        prev + 0.1 * simulationSpeed
-      );
-
-
-      // ========================================
-      // CHASER ORBIT
-      // ========================================
-
-      setChaserPosition((prev) => {
-
-        const currentAngle =
-          Math.atan2(
-            prev.z / 5.5,
-            prev.x / 4.8
-          );
-
-
-        const nextAngle =
-          currentAngle +
-          0.003 * simulationSpeed;
-
-
-        return {
-          x:
-            Math.cos(nextAngle) * 4.8,
-
-          y: 0,
-
-          z:
-            Math.sin(nextAngle) * 5.5,
-        };
-
+      /*
+       * Mission time
+       */
+      setMissionTime((previousTime) => {
+        return previousTime + 0.1 * speed;
       });
 
+      /*
+       * =========================
+       * CHASER ORBIT
+       * =========================
+       */
 
-      // ========================================
-      // TARGET ORBIT
-      // ========================================
-
-      setTargetPosition((prev) => {
-
-        const currentAngle =
-          Math.atan2(
-            prev.z / 7.0,
-            prev.x / 6.2
-          );
-
+      setChaserPosition((previousPosition) => {
+        const currentAngle = Math.atan2(
+          previousPosition.z / CHASER_ORBIT_Z,
+          previousPosition.x / CHASER_ORBIT_X
+        );
 
         const nextAngle =
-          currentAngle +
-          0.0025 * simulationSpeed;
-
+          currentAngle + 0.003 * speed;
 
         return {
-          x:
-            Math.cos(nextAngle) * 6.2,
-
+          x: Math.cos(nextAngle) * CHASER_ORBIT_X,
           y: 0,
-
-          z:
-            Math.sin(nextAngle) * 7.0,
+          z: Math.sin(nextAngle) * CHASER_ORBIT_Z,
         };
-
       });
 
+      /*
+       * =========================
+       * TARGET ORBIT
+       * =========================
+       */
+
+      setTargetPosition((previousPosition) => {
+        const currentAngle = Math.atan2(
+          previousPosition.z / TARGET_ORBIT_Z,
+          previousPosition.x / TARGET_ORBIT_X
+        );
+
+        const nextAngle =
+          currentAngle + 0.0025 * speed;
+
+        return {
+          x: Math.cos(nextAngle) * TARGET_ORBIT_X,
+          y: 0,
+          z: Math.sin(nextAngle) * TARGET_ORBIT_Z,
+        };
+      });
     }, 100);
 
+    return () => clearInterval(interval);
+  }, [isRunning, simulationSpeed]);
 
-    return () => {
-      clearInterval(interval);
-    };
-
-  }, [
-    isRunning,
-    simulationSpeed,
-  ]);
-
-
-  // ==========================================
-  // RESET
-  // ==========================================
+  /*
+   * =========================
+   * RESET SIMULATION
+   * =========================
+   */
 
   const resetSimulation = () => {
-
     setIsRunning(false);
 
     setSimulationSpeed(1);
 
     setMissionTime(0);
 
-
     setChaserPosition({
-      x: 4.8,
-      y: 0,
-      z: 0,
+      ...INITIAL_CHASER_POSITION,
     });
-
 
     setTargetPosition({
-      x: 6.2,
-      y: 0,
-      z: 0,
+      ...INITIAL_TARGET_POSITION,
     });
 
-
-    setResetKey(
-      (prev) => prev + 1
-    );
-
-
     setSelectedObject(null);
+
+    setResetKey((previousKey) => previousKey + 1);
   };
 
-
-  // ==========================================
-  // PROVIDER
-  // ==========================================
-
   return (
-
     <SimulationContext.Provider
       value={{
-
+        /*
+         * Selection
+         */
         selectedObject,
         setSelectedObject,
 
+        /*
+         * Simulation controls
+         */
         isRunning,
         setIsRunning,
 
@@ -215,33 +165,35 @@ export function SimulationProvider({ children }) {
         missionTime,
         setMissionTime,
 
+        /*
+         * Reset
+         */
         resetKey,
         resetSimulation,
 
+        /*
+         * Spacecraft positions
+         */
         chaserPosition,
         setChaserPosition,
 
         targetPosition,
         setTargetPosition,
 
+        /*
+         * Orbit constants
+         */
+        CHASER_ORBIT_X,
+        CHASER_ORBIT_Z,
+        TARGET_ORBIT_X,
+        TARGET_ORBIT_Z,
       }}
     >
-
       {children}
-
     </SimulationContext.Provider>
   );
 }
 
-
-// ==========================================
-// HOOK
-// ==========================================
-
 export function useSimulation() {
-
-  return useContext(
-    SimulationContext
-  );
-
+  return useContext(SimulationContext);
 }

@@ -1,680 +1,166 @@
-import { Canvas, useFrame } from "@react-three/fiber";
-import {
-  PerspectiveCamera,
-  useGLTF,
-  Html,
-} from "@react-three/drei";
-
-import { useMemo, useRef } from "react";
-
+import { Canvas } from "@react-three/fiber";
 import { useSimulation } from "../../../context/SimulationContext";
-
+import SensorSceneWorld from "./SensorSceneWorld";
+import { getSensorToTargetDistance } from "./sensorConstants";
 import "./SensorViewer.css";
 
-
-// =====================================================
-// TARGET MODEL
-// =====================================================
-
-function TargetModel({ thermal = false }) {
-
-  const { scene } = useGLTF(
-    "/models/satellite.glb"
-  );
-
-  const target = useMemo(() => {
-
-    const clone = scene.clone(true);
-
-    clone.traverse((child) => {
-
-      if (!child.isMesh) return;
-
-      if (child.material) {
-
-        child.material =
-          child.material.clone();
-
-        if (thermal) {
-
-          child.material.color.set(
-            "#b85c32"
-          );
-
-          child.material.emissive.set(
-            "#5c2415"
-          );
-
-          child.material.emissiveIntensity =
-            0.7;
-        }
-      }
-    });
-
-    return clone;
-
-  }, [scene, thermal]);
-
-  return (
-    <primitive
-      object={target}
-      scale={0.12}
-    />
-  );
-}
-
-
-// =====================================================
-// CAMERA SCENE
-// =====================================================
-
-function CameraScene({
-  sensor,
-  showDetection = false,
-}) {
-
-  const targetRef = useRef(null);
-
-  const {
-    chaserPosition,
-    targetPosition,
-  } = useSimulation();
-
-
-  // ===================================================
-  // CHASER ORBIT
-  // ===================================================
-
-  const CHASER_ORBIT_X = 4.8;
-  const CHASER_ORBIT_Z = 5.5;
-
-
-  // ===================================================
-  // CHASER ORIENTATION
-  // ===================================================
-
-  const chaserAngle =
-    Math.atan2(
-      chaserPosition.z / CHASER_ORBIT_Z,
-      chaserPosition.x / CHASER_ORBIT_X
-    );
-
-  const chaserYaw =
-    chaserAngle + Math.PI / 2;
-
-
-  // ===================================================
-  // SENSOR OFFSET
-  // ===================================================
-
-  let sensorX = 0;
-  let sensorY = 0.48;
-  let sensorZ = -0.70;
-
-
-  if (sensor === "Thermal Camera") {
-
-    sensorX = 0;
-    sensorY = 0.05;
-    sensorZ = 0.90;
-  }
-
-
-  if (sensor === "Stereo Camera") {
-
-    sensorX = 0;
-    sensorY = 0.35;
-    sensorZ = -0.58;
-  }
-
-
-  if (sensor === "LiDAR") {
-
-    sensorX = 0;
-    sensorY = 0;
-    sensorZ = -1.15;
-  }
-
-
-  // ===================================================
-  // SENSOR WORLD POSITION
-  // ===================================================
-
-  const cos =
-    Math.cos(chaserYaw);
-
-  const sin =
-    Math.sin(chaserYaw);
-
-
-  const sensorWorldX =
-    chaserPosition.x +
-    cos * sensorX +
-    sin * sensorZ;
-
-
-  const sensorWorldY =
-    chaserPosition.y +
-    sensorY;
-
-
-  const sensorWorldZ =
-    chaserPosition.z -
-    sin * sensorX +
-    cos * sensorZ;
-
-
-  // ===================================================
-  // TARGET RELATIVE POSITION
-  // ===================================================
-
-  const dx =
-    targetPosition.x -
-    sensorWorldX;
-
-  const dy =
-    targetPosition.y -
-    sensorWorldY;
-
-  const dz =
-    targetPosition.z -
-    sensorWorldZ;
-
-
-  // ===================================================
-  // SENSOR DISTANCE
-  // ===================================================
-
-  const distance =
-    Math.sqrt(
-      dx * dx +
-      dy * dy +
-      dz * dz
-    );
-
-
-  // ===================================================
-  // WORLD → SENSOR SPACE
-  // ===================================================
-
-  const relativeX =
-    cos * dx -
-    sin * dz;
-
-  const relativeY =
-    dy;
-
-  const relativeZ =
-    sin * dx +
-    cos * dz;
-
-
-  // ===================================================
-  // TARGET UPDATE
-  // ===================================================
-
-  useFrame(() => {
-
-    if (!targetRef.current) return;
-
-    targetRef.current.position.set(
-      relativeX,
-      relativeY,
-      relativeZ
-    );
-
-  });
-
-
-  return (
-    <>
-
-      {/* ============================================ */}
-      {/* RGB-D / SENSOR CAMERA */}
-      {/* ============================================ */}
-
-  <PerspectiveCamera
-  makeDefault
-  position={[
-    0,
-    0,
-    0
-  ]}
-  rotation={[
-    0,
-    Math.PI,
-    0
-  ]}
-  fov={60}
-  near={0.1}
-  far={100}
-/>
-
-      {/* ============================================ */}
-      {/* LIGHTING */}
-      {/* ============================================ */}
-
-      <ambientLight
-        intensity={
-          sensor === "Thermal Camera"
-            ? 1.0
-            : 1.5
-        }
-      />
-
-      <directionalLight
-        position={[
-          3,
-          4,
-          5
-        ]}
-        intensity={3}
-      />
-
-
-      {/* ============================================ */}
-      {/* TARGET */}
-      {/* ============================================ */}
-
-      <group
-        ref={targetRef}
-        position={[
-          relativeX,
-          relativeY,
-          relativeZ
-        ]}
-      >
-
-        <TargetModel
-          thermal={
-            sensor === "Thermal Camera"
-          }
-        />
-
-
-        {/* ======================================== */}
-        {/* TARGET DETECTION BOX */}
-        {/* ======================================== */}
-
-        {showDetection && (
-          <Html
-            center
-            distanceFactor={1}
-            style={{
-              pointerEvents: "none",
-            }}
-          >
-
-            <div
-              style={{
-                width: "145px",
-                height: "85px",
-                border:
-                  "1px solid #60a5fa",
-                position: "relative",
-                boxSizing: "border-box",
-              }}
-            >
-
-              <span
-                style={{
-                  position:
-                    "absolute",
-                  left: "0",
-                  top: "-20px",
-                  padding:
-                    "3px 6px",
-                  fontSize: "9px",
-                  color: "#60a5fa",
-                  background:
-                    "#08111f",
-                  border:
-                    "1px solid #60a5fa",
-                  whiteSpace:
-                    "nowrap",
-                }}
-              >
-                TARGET
-              </span>
-
-            </div>
-
-          </Html>
-        )}
-
-      </group>
-
-    </>
-  );
-}
-
-
-// =====================================================
-// SENSOR CANVAS
-// =====================================================
-
+/**
+ * Sensor Canvas Container
+ */
 function SensorCanvas({
   sensor,
-  showDetection = false,
+  subType = null,
+  canvasId = "sensor-canvas",
+  onGlReady = null,
 }) {
-
   return (
-    <div className="sensor-camera-canvas">
-
+    <div className="sensor-camera-canvas" id={canvasId}>
       <Canvas
-        camera={{
-          position: [
-            0,
-            0,
-            0
-          ],
-          fov: 60,
-          near: 0.1,
-          far: 100
+        gl={{
+          preserveDrawingBuffer: true,
+          antialias: true,
+          powerPreference: "high-performance",
         }}
       >
-
-        <CameraScene
+        <SensorSceneWorld
           sensor={sensor}
-          showDetection={
-            showDetection
-          }
+          subType={subType}
+          onGlReady={onGlReady}
         />
-
       </Canvas>
-
     </div>
   );
 }
 
-
-// =====================================================
-// RGB-D VIEW
-// =====================================================
-
-function RGBDView() {
-
-  const {
-    chaserPosition,
-    targetPosition,
-  } = useSimulation();
-
-
-  // ===================================================
-  // RGB-D SENSOR OFFSET
-  // ===================================================
-
-  const SENSOR_X = 0;
-  const SENSOR_Y = 0.48;
-  const SENSOR_Z = -0.70;
-
-
-  // ===================================================
-  // CHASER ANGLE
-  // ===================================================
-
-  const chaserAngle =
-    Math.atan2(
-      chaserPosition.z / 5.5,
-      chaserPosition.x / 4.8
-    );
-
-  const chaserYaw =
-    chaserAngle + Math.PI / 2;
-
-
-  const cos =
-    Math.cos(chaserYaw);
-
-  const sin =
-    Math.sin(chaserYaw);
-
-
-  // ===================================================
-  // SENSOR WORLD POSITION
-  // ===================================================
-
-  const sensorWorldX =
-    chaserPosition.x +
-    cos * SENSOR_X +
-    sin * SENSOR_Z;
-
-
-  const sensorWorldY =
-    chaserPosition.y +
-    SENSOR_Y;
-
-
-  const sensorWorldZ =
-    chaserPosition.z -
-    sin * SENSOR_X +
-    cos * SENSOR_Z;
-
-
-  // ===================================================
-  // TARGET DISTANCE
-  // ===================================================
-
-  const dx =
-    targetPosition.x -
-    sensorWorldX;
-
-  const dy =
-    targetPosition.y -
-    sensorWorldY;
-
-  const dz =
-    targetPosition.z -
-    sensorWorldZ;
-
-
-  const depth =
-    Math.sqrt(
-      dx * dx +
-      dy * dy +
-      dz * dz
-    );
-
+/**
+ * RGB-D Visual & Depth View
+ */
+function RGBDView({ onGlReady }) {
+  const { chaserPosition, targetPosition } = useSimulation();
+  const depth = getSensorToTargetDistance(chaserPosition, targetPosition, "RGB-D Camera");
 
   return (
     <div className="sensor-3d-view">
-
       <SensorCanvas
         sensor="RGB-D Camera"
-        showDetection={true}
+        canvasId="sensor-main-canvas"
+        onGlReady={onGlReady}
       />
 
-
-      {/* ========================================== */}
-      {/* RGB */}
-      {/* ========================================== */}
-
-      <div className="sensor-overlay top-left">
-        RGB
-      </div>
-
-
-      {/* ========================================== */}
-      {/* DEPTH */}
-      {/* ========================================== */}
-
-      <div className="sensor-overlay top-right">
-        DEPTH
-      </div>
-
-
-      {/* ========================================== */}
-      {/* CROSSHAIR */}
-      {/* ========================================== */}
-
-      <div className="crosshair">
-        +
-      </div>
-
-
-      {/* ========================================== */}
-      {/* DEPTH READOUT */}
-      {/* ========================================== */}
+      <div className="sensor-overlay top-left">RGB-D FEED</div>
+      <div className="sensor-overlay top-right">DEPTH SENSOR ACTIVE</div>
+      <div className="crosshair">+</div>
 
       <div className="depth-readout">
-
-        <span>
-          DEPTH
-        </span>
-
-        <strong>
-          {depth.toFixed(2)} m
-        </strong>
-
+        <span>ESTIMATED DEPTH</span>
+        <strong>{depth.toFixed(2)} m</strong>
       </div>
-
     </div>
   );
 }
 
-
-// =====================================================
-// STEREO VIEW
-// =====================================================
-
-function StereoView() {
+/**
+ * Stereo Binocular View (Left and Right)
+ */
+function StereoView({ onGlReady }) {
+  const { chaserPosition, targetPosition } = useSimulation();
+  const distance = getSensorToTargetDistance(chaserPosition, targetPosition, "Stereo Camera");
 
   return (
     <div className="stereo-3d-view">
-
       <div className="stereo-camera-view">
-
-        <span className="camera-label">
-          LEFT CAMERA
-        </span>
-
+        <span className="camera-label">LEFT STEREO CAMERA</span>
         <SensorCanvas
           sensor="Stereo Camera"
+          subType="Stereo Left"
+          canvasId="sensor-main-canvas"
+          onGlReady={onGlReady}
         />
-
       </div>
-
 
       <div className="stereo-camera-view">
-
-        <span className="camera-label">
-          RIGHT CAMERA
-        </span>
-
+        <span className="camera-label">RIGHT STEREO CAMERA</span>
         <SensorCanvas
           sensor="Stereo Camera"
+          subType="Stereo Right"
+          canvasId="sensor-stereo-right-canvas"
         />
-
       </div>
 
+      <div className="depth-readout">
+        <span>BINOCULAR RANGE</span>
+        <strong>{distance.toFixed(2)} m</strong>
+      </div>
     </div>
   );
 }
 
-
-// =====================================================
-// THERMAL VIEW
-// =====================================================
-
-function ThermalView() {
+/**
+ * Thermal Infrared View
+ */
+function ThermalView({ onGlReady }) {
+  const { chaserPosition, targetPosition } = useSimulation();
+  const distance = getSensorToTargetDistance(chaserPosition, targetPosition, "Thermal Camera");
 
   return (
     <div className="thermal-3d-view">
-
       <SensorCanvas
         sensor="Thermal Camera"
+        canvasId="sensor-main-canvas"
+        onGlReady={onGlReady}
       />
 
-      <div className="thermal-label">
-        THERMAL
-      </div>
+      <div className="thermal-label">IR THERMAL IMAGING</div>
 
       <div className="temperature-readout">
-
-        <span>
-          TARGET TEMP
-        </span>
-
-        <strong>
-          42.6°C
-        </strong>
-
+        <span>ESTIMATED RANGE</span>
+        <strong>{distance.toFixed(2)} m</strong>
       </div>
-
     </div>
   );
 }
 
-
-// =====================================================
-// LiDAR VIEW
-// =====================================================
-
-function LiDARView() {
+/**
+ * LiDAR 3D Perception View
+ */
+function LiDARView({ onGlReady }) {
+  const { chaserPosition, targetPosition } = useSimulation();
+  const range = getSensorToTargetDistance(chaserPosition, targetPosition, "LiDAR");
 
   return (
     <div className="lidar-3d-view">
-
       <SensorCanvas
         sensor="LiDAR"
+        canvasId="sensor-main-canvas"
+        onGlReady={onGlReady}
       />
 
-      <div className="lidar-label">
-        LiDAR SENSOR VIEW
-      </div>
+      <div className="lidar-label">LiDAR SENSOR VIEW</div>
 
       <div className="lidar-readout">
-
-        <span>
-          RANGE
-        </span>
-
-        <strong>
-          --
-        </strong>
-
+        <span>LiDAR RANGE</span>
+        <strong>{range.toFixed(2)} m</strong>
       </div>
-
     </div>
   );
 }
 
-
-// =====================================================
-// MAIN
-// =====================================================
-
-function SensorTargetView({
-  selectedSensor
-}) {
-
+/**
+ * Main Sensor Target View Selector
+ */
+function SensorTargetView({ selectedSensor, onGlReady }) {
   switch (selectedSensor) {
-
     case "RGB-D Camera":
-      return <RGBDView />;
-
+      return <RGBDView onGlReady={onGlReady} />;
     case "Stereo Camera":
-      return <StereoView />;
-
+      return <StereoView onGlReady={onGlReady} />;
     case "Thermal Camera":
-      return <ThermalView />;
-
+      return <ThermalView onGlReady={onGlReady} />;
     case "LiDAR":
-      return <LiDARView />;
-
+      return <LiDARView onGlReady={onGlReady} />;
     default:
-      return <RGBDView />;
+      return <RGBDView onGlReady={onGlReady} />;
   }
 }
-
-
-// =====================================================
-// PRELOAD
-// =====================================================
-
-useGLTF.preload(
-  "/models/satellite.glb"
-);
-
 
 export default SensorTargetView;

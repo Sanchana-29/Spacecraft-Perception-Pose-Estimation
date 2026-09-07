@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Dashboard from "../pages/Dashboard";
 import Detection from "../pages/Detection";
-import Camera from "../pages/Camera";
 
 import PoseEstimation from "../pages/PoseEstimation";
 import Telemetry from "../pages/Telemetry";
