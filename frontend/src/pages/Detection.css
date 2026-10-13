@@ -1,14 +1,52 @@
-.detection-page{
-    height:100%;
-    display:flex;
-    flex-direction:column;
-    gap:18px;
-    padding:20px;
-    overflow:auto;
+.detection-page {
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  overflow: hidden;
 }
 
-.detection-middle{
-    display:grid;
-    grid-template-columns:260px 1fr 260px;
-    gap:18px;
+.detection-middle {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr) 280px;
+  grid-template-rows: minmax(0, 1fr);
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
+}
+
+.detection-left-col, .detection-right-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+}
+
+/* Compact Overrides to prevent scrolling */
+.detection-middle .processing-pipeline { padding: 12px !important; }
+.detection-middle .processing-pipeline h3 { margin-bottom: 10px !important; }
+.detection-middle .pipeline-list { gap: 6px !important; }
+.detection-middle .pipeline-card { padding: 8px 12px !important; width: 100% !important; max-width: 180px !important; }
+.detection-middle .pipeline-arrow { font-size: 14px !important; }
+.detection-middle .detection-table { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.detection-middle .table-header { height: 40px !important; padding: 0 12px !important; }
+.detection-middle th, .detection-middle td { padding: 6px 4px !important; font-size: 11px !important; }
+.detection-middle .empty { height: 40px !important; }
+
+/* Right side overrides */
+.detection-middle .detection-statistics { padding: 12px !important; flex: 1; display: flex; flex-direction: column; }
+.detection-middle .detection-statistics h3 { margin-bottom: 12px !important; }
+.detection-middle .stats-grid { gap: 8px !important; flex: 1; display: flex; flex-direction: column; justify-content: space-evenly; }
+.detection-middle .stat-card { padding: 8px 12px !important; gap: 10px !important; min-height: 0; }
+.detection-middle .stat-icon { font-size: 18px !important; }
+.detection-middle .stat-card h2 { margin-top: 2px !important; font-size: 16px !important; }
+
+.detection-controls {
+  transition: margin-left 0.25s ease;
+}
+
+.layout.sidebar-collapsed .detection-controls {
+  margin-left: 56px;
 }

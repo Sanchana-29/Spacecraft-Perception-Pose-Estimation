@@ -39,3 +39,55 @@ export async function getPoseData() {
 
   return response.json();
 }
+
+/**
+ * Converts Base64 Data URL to binary Blob object for multipart/form-data upload
+ */
+export function dataURLtoBlob(dataurl) {
+  const arr = dataurl.split(",");
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new Blob([u8arr], { type: mime });
+}
+
+/**
+ * Sends captured sensor image Blob to FastAPI detection endpoint
+ */
+export async function runDetectionApi(imageBlob) {
+  const formData = new FormData();
+  formData.append("file", imageBlob, "captured_frame.png");
+
+  const response = await fetch(`${API_BASE_URL}/api/detection/run`, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => "");
+    throw new Error(`Detection API failed [${response.status}]: ${errorText}`);
+  }
+
+  return response.json();
+}
+
+export async function runPoseEstimationApi(bbox) {
+  const response = await fetch(`${API_BASE_URL}/api/pose/estimate`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ bbox }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => "");
+    throw new Error(`Pose Estimation API failed [${response.status}]: ${errorText}`);
+  }
+
+  return response.json();
+}

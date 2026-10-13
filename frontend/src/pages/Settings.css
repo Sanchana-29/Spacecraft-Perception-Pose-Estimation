@@ -1,25 +1,50 @@
-.settings-page{
-
-    height:100%;
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:20px;
-
-    padding:20px;
-
-    overflow:auto;
-
+.settings-page {
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  overflow: hidden;
 }
 
-.settings-grid{
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
+}
 
-    display:grid;
+.camera-settings h2 {
+  transition: margin-left 0.25s ease;
+}
 
-    grid-template-columns:1fr 1fr;
+.layout.sidebar-collapsed .camera-settings h2 {
+  margin-left: 56px;
+}
 
-    gap:20px;
-
-}   
+/* Compact Overrides */
+.settings-page > div > div, 
+.settings-page .settings-actions {
+  padding: 12px !important;
+}
+.settings-page h2 {
+  margin-bottom: 10px !important;
+  font-size: 16px;
+}
+.settings-page .settings-grid {
+  gap: 10px !important;
+}
+.settings-page .setting-item {
+  gap: 4px !important;
+}
+.settings-page .setting-item select,
+.settings-page .setting-item input {
+  padding: 6px 10px !important;
+}
+.settings-page .checkbox-item {
+  margin-bottom: 4px !important;
+}

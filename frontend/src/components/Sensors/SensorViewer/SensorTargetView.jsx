@@ -16,6 +16,7 @@ function SensorCanvas({
   return (
     <div className="sensor-camera-canvas" id={canvasId}>
       <Canvas
+        camera={{ fov: 60, near: 0.1, far: 300 }}
         gl={{
           preserveDrawingBuffer: true,
           antialias: true,
@@ -47,12 +48,12 @@ function RGBDView({ onGlReady }) {
         onGlReady={onGlReady}
       />
 
-      <div className="sensor-overlay top-left">RGB-D FEED</div>
+      <div className="sensor-overlay top-left">RGB-D POV</div>
       <div className="sensor-overlay top-right">DEPTH SENSOR ACTIVE</div>
       <div className="crosshair">+</div>
 
       <div className="depth-readout">
-        <span>ESTIMATED DEPTH</span>
+        <span>ESTIMATED RANGE</span>
         <strong>{depth.toFixed(2)} m</strong>
       </div>
     </div>
@@ -60,26 +61,26 @@ function RGBDView({ onGlReady }) {
 }
 
 /**
- * Stereo Binocular View (Left and Right)
+ * Stereo Binocular View (Left and Right Cameras)
  */
 function StereoView({ onGlReady }) {
   const { chaserPosition, targetPosition } = useSimulation();
-  const distance = getSensorToTargetDistance(chaserPosition, targetPosition, "Stereo Camera");
+  const distance = getSensorToTargetDistance(chaserPosition, targetPosition, "Stereo Camera", "Stereo Left");
 
   return (
     <div className="stereo-3d-view">
       <div className="stereo-camera-view">
-        <span className="camera-label">LEFT STEREO CAMERA</span>
+        <span className="camera-label">LEFT STEREO CAMERA [-0.28, 0.35, -0.58]</span>
         <SensorCanvas
           sensor="Stereo Camera"
           subType="Stereo Left"
-          canvasId="sensor-main-canvas"
+          canvasId="sensor-stereo-left-canvas"
           onGlReady={onGlReady}
         />
       </div>
 
       <div className="stereo-camera-view">
-        <span className="camera-label">RIGHT STEREO CAMERA</span>
+        <span className="camera-label">RIGHT STEREO CAMERA [+0.28, 0.35, -0.58]</span>
         <SensorCanvas
           sensor="Stereo Camera"
           subType="Stereo Right"
@@ -110,7 +111,7 @@ function ThermalView({ onGlReady }) {
         onGlReady={onGlReady}
       />
 
-      <div className="thermal-label">IR THERMAL IMAGING</div>
+      <div className="thermal-label">IR THERMAL IMAGING [REAR-MOUNTED, FORWARD-LOOKING]</div>
 
       <div className="temperature-readout">
         <span>ESTIMATED RANGE</span>
@@ -135,7 +136,7 @@ function LiDARView({ onGlReady }) {
         onGlReady={onGlReady}
       />
 
-      <div className="lidar-label">LiDAR SENSOR VIEW</div>
+      <div className="lidar-label">LiDAR SENSOR VIEW [FORWARD-FACING]</div>
 
       <div className="lidar-readout">
         <span>LiDAR RANGE</span>

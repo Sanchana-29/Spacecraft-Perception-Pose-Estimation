@@ -8,6 +8,7 @@ import Telemetry from "../pages/Telemetry";
 import MissionSummary from "../pages/MissionSummary";
 import Settings from "../pages/Settings";
 import Sensors from "../pages/Sensors";
+import DatasetGenerator from "../pages/DatasetGenerator";
 
 function AppRoutes() {
   return (
@@ -26,6 +27,7 @@ function AppRoutes() {
         <Route path="/telemetry" element={<Telemetry />} />
         <Route path="/mission-summary" element={<MissionSummary />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/dataset-generator" element={<DatasetGenerator />} />
       </Routes>
     </BrowserRouter>
   );

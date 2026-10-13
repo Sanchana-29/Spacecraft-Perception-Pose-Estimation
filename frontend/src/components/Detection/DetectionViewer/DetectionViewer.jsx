@@ -1,11 +1,20 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaCamera, FaSatellite, FaRedo } from "react-icons/fa";
+import { FaCamera, FaSatellite, FaRedo, FaExclamationTriangle, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import { useSensor } from "../../../context/SensorContext";
 import "./DetectionViewer.css";
 
 function DetectionViewer() {
-  const { capturedFrame } = useSensor();
+  const { capturedFrame, detectionResult, isDetecting, detectionError } = useSensor();
   const navigate = useNavigate();
+  const [imageDims, setImageDims] = useState({ w: 0, h: 0 });
+
+  const handleImageLoad = (e) => {
+    setImageDims({
+      w: e.target.naturalWidth || e.target.width,
+      h: e.target.naturalHeight || e.target.height,
+    });
+  };
 
   return (
     <div className="detection-viewer">
@@ -32,7 +41,15 @@ function DetectionViewer() {
           )}
 
           <div className="viewer-status">
-            {capturedFrame ? "🟢 FRAME LOADED" : "🟡 AWAITING INPUT"}
+            {isDetecting
+              ? "🟡 PROCESSING OpenCV..."
+              : detectionResult?.detected
+              ? "🟢 TARGET DETECTED"
+              : detectionResult?.detected === false
+              ? "🔴 TARGET ABSENT"
+              : capturedFrame
+              ? "🟢 FRAME LOADED"
+              : "🟡 AWAITING INPUT"}
           </div>
         </div>
       </div>
@@ -44,7 +61,51 @@ function DetectionViewer() {
               src={capturedFrame.imageData}
               alt="Captured Sensor Frame"
               className="captured-frame-image"
+              onLoad={handleImageLoad}
             />
+
+            {/* BOUNDING BOX OVERLAY FROM BACKEND RESPONSE */}
+            {detectionResult?.detected && Array.isArray(detectionResult.detections) && detectionResult.detections.map((det, index) => (
+              <div
+                key={index}
+                className="bounding-box-overlay"
+                style={{
+                  left: imageDims.w
+                    ? `${(det.bounding_box.x / imageDims.w) * 100}%`
+                    : `${det.bounding_box.x}px`,
+                  top: imageDims.h
+                    ? `${(det.bounding_box.y / imageDims.h) * 100}%`
+                    : `${det.bounding_box.y}px`,
+                  width: imageDims.w
+                    ? `${(det.bounding_box.width / imageDims.w) * 100}%`
+                    : `${det.bounding_box.width}px`,
+                  height: imageDims.h
+                    ? `${(det.bounding_box.height / imageDims.h) * 100}%`
+                    : `${det.bounding_box.height}px`,
+                }}
+              >
+                <span className="bounding-box-label">
+                  <FaCheckCircle style={{ marginRight: 4 }} />
+                  {det.id || `SAT-00${index + 1}`} ({Math.round(det.confidence * 100)}%)
+                </span>
+              </div>
+            ))}
+
+            {/* TARGET NOT DETECTED OVERLAY */}
+            {detectionResult && !detectionResult.detected && (
+              <div className="detection-alert-badge absent">
+                <FaTimesCircle />
+                <span>Target not detected in current frame</span>
+              </div>
+            )}
+
+            {/* DETECTION ERROR OVERLAY */}
+            {detectionError && (
+              <div className="detection-alert-badge error">
+                <FaExclamationTriangle />
+                <span>{detectionError}</span>
+              </div>
+            )}
 
             {/* HUD OVERLAYS */}
             <div className="frame-overlay-badge top-left">

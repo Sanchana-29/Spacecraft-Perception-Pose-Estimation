@@ -1,0 +1,113 @@
+{
+  "description": "Validated 3D model-frame landmark reference data extracted from satellite.glb transform tree for SolvePnP pose estimation.",
+  "target_spacecraft_model": "satellite.glb",
+  "scale_factor": 0.08,
+  "reference_image": {
+    "available": false,
+    "path": null,
+    "dimensions": {
+      "width": null,
+      "height": null
+    }
+  },
+  "landmarks": [
+    {
+      "id": "solar_panel_right_tip",
+      "name": "Solar Panel Right Wing Tip (+X)",
+      "glb_node": "Object_55",
+      "object_point_3d": {
+        "x": -0.0044,
+        "y": -0.1416,
+        "z": -0.2182
+      },
+      "reference_pixel_2d": {
+        "u": null,
+        "v": null
+      }
+    },
+    {
+      "id": "solar_panel_left_tip",
+      "name": "Solar Panel Left Wing Tip (-X)",
+      "glb_node": "Object_55",
+      "object_point_3d": {
+        "x": 0.2078,
+        "y": -0.1301,
+        "z": -0.0870
+      },
+      "reference_pixel_2d": {
+        "u": null,
+        "v": null
+      }
+    },
+    {
+      "id": "solar_panel_top_edge",
+      "name": "Solar Panel Top Edge (+Y)",
+      "glb_node": "Object_55",
+      "object_point_3d": {
+        "x": 0.2120,
+        "y": 0.0652,
+        "z": -0.1293
+      },
+      "reference_pixel_2d": {
+        "u": null,
+        "v": null
+      }
+    },
+    {
+      "id": "chassis_top_front_corner",
+      "name": "Spacecraft Chassis Top Front Corner",
+      "glb_node": "Object_4",
+      "object_point_3d": {
+        "x": 0.0121,
+        "y": 0.0629,
+        "z": -0.0251
+      },
+      "reference_pixel_2d": {
+        "u": null,
+        "v": null
+      }
+    },
+    {
+      "id": "chassis_bottom_rear_base",
+      "name": "Spacecraft Chassis Bottom Rear Base",
+      "glb_node": "Object_4",
+      "object_point_3d": {
+        "x": 0.1643,
+        "y": 0.0127,
+        "z": -0.2668
+      },
+      "reference_pixel_2d": {
+        "u": null,
+        "v": null
+      }
+    },
+    {
+      "id": "primary_dish_center",
+      "name": "Primary Dish Center",
+      "glb_node": "Object_43",
+      "object_point_3d": {
+        "x": -0.0075,
+        "y": 0.0027,
+        "z": 0.0119
+      },
+      "reference_pixel_2d": {
+        "u": null,
+        "v": null
+      }
+    },
+    {
+      "id": "optical_lens_center",
+      "name": "Optical Lens Center",
+      "glb_node": "Object_49",
+      "object_point_3d": {
+        "x": -0.0520,
+        "y": 0.0186,
+        "z": 0.0825
+      },
+      "reference_pixel_2d": {
+        "u": null,
+        "v": null
+      }
+    }
+  ]
+}

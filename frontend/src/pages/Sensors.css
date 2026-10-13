@@ -22,3 +22,11 @@
     grid-template-columns:1fr 1fr;
     gap:20px;
 }
+
+.sensor-backend-status {
+  transition: margin-left 0.25s ease;
+}
+
+.layout.sidebar-collapsed .sensor-backend-status {
+  margin-left: 56px;
+}

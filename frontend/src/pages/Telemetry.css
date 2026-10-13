@@ -1,15 +1,45 @@
-.telemetry-page{
+.telemetry-page {
+  height: 100%;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 18px;
+  padding: 20px;
+  overflow-y: auto;
+}
 
-    height:100%;
+.telemetry-controls, .live-metrics, .telemetry-logs {
+  grid-column: 1 / -1;
+}
 
-    display:flex;
+.telemetry-controls {
+  transition: margin-left 0.25s ease;
+}
 
-    flex-direction:column;
+.layout.sidebar-collapsed .telemetry-controls {
+  margin-left: 56px;
+}
 
-    gap:18px;
-
-    padding:20px;
-
-    overflow:auto;
-
+/* Chart Styles Overrides */
+.telemetry-page .chart-card {
+  height: 100% !important;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+}
+.telemetry-page .chart-placeholder {
+  flex: 1;
+  height: auto !important;
+  background-image: 
+    linear-gradient(rgba(49, 65, 93, 0.4) 1px, transparent 1px), 
+    linear-gradient(90deg, rgba(49, 65, 93, 0.4) 1px, transparent 1px);
+  background-size: 20px 20px;
+  background-position: center;
+  font-size: 11px;
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+.telemetry-page .chart-placeholder h2 {
+  display: none !important;
 }

@@ -1,6 +1,12 @@
 import { useEffect, useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import { useSimulation } from "../../context/SimulationContext";
+import * as THREE from "three";
+import {
+  TARGET_ORBIT_X,
+  TARGET_ORBIT_Z,
+  INITIAL_TARGET_POSITION,
+} from "../../utils/trajectory";
 
 function TargetSpacecraft() {
   const groupRef = useRef();
@@ -9,12 +15,18 @@ function TargetSpacecraft() {
 
   const {
     targetPosition,
+    targetQuaternion,
+    angularVelocity,
+    tumblingRate,
+    selectedObject,
+    trackingTarget,
+    isTracking,
     setSelectedObject,
     resetKey,
   } = useSimulation();
 
-  const ORBIT_X = 6.2;
-  const ORBIT_Z = 7.0;
+  const ORBIT_X = TARGET_ORBIT_X;
+  const ORBIT_Z = TARGET_ORBIT_Z;
 
   /*
    * =========================
@@ -33,18 +45,12 @@ function TargetSpacecraft() {
       targetPosition.y,
       targetPosition.z
     );
-
-    const angle = Math.atan2(
-      targetPosition.z / ORBIT_Z,
-      targetPosition.x / ORBIT_X
-    );
-
-    groupRef.current.rotation.set(
-      0,
-      angle + Math.PI / 2,
-      0
-    );
   }, [targetPosition]);
+
+  useEffect(() => {
+    if (!groupRef.current || !targetQuaternion) return;
+    groupRef.current.quaternion.copy(targetQuaternion);
+  }, [targetQuaternion]);
 
   /*
    * =========================
@@ -56,17 +62,11 @@ function TargetSpacecraft() {
     if (!groupRef.current) return;
 
     groupRef.current.position.set(
-      ORBIT_X,
-      0,
-      0
+      targetPosition.x,
+      targetPosition.y,
+      targetPosition.z
     );
-
-    groupRef.current.rotation.set(
-      0,
-      Math.PI / 2,
-      0
-    );
-  }, [resetKey]);
+  }, [resetKey, targetPosition]);
 
   /*
    * =========================
@@ -76,6 +76,11 @@ function TargetSpacecraft() {
 
   const handleClick = (event) => {
     event.stopPropagation();
+    
+    const euler = new THREE.Euler().setFromQuaternion(
+      targetQuaternion || new THREE.Quaternion(), 
+      "XYZ"
+    );
 
     setSelectedObject({
       id: "SAT-001",
@@ -94,10 +99,18 @@ function TargetSpacecraft() {
       },
 
       attitude: {
-        roll: "2.1°",
-        pitch: "4.5°",
-        yaw: "18.2°",
+        roll: `${((euler.x * 180) / Math.PI).toFixed(1)}°`,
+        pitch: `${((euler.y * 180) / Math.PI).toFixed(1)}°`,
+        yaw: `${((euler.z * 180) / Math.PI).toFixed(1)}°`,
       },
+      
+      angularVelocity: {
+        x: angularVelocity?.x.toFixed(4) || "0.0000",
+        y: angularVelocity?.y.toFixed(4) || "0.0000",
+        z: angularVelocity?.z.toFixed(4) || "0.0000",
+      },
+      
+      tumblingRate: tumblingRate?.toFixed(4) || "0.0000",
 
       trackingStatus: "Active",
       confidence: "96.4%",
@@ -107,13 +120,28 @@ function TargetSpacecraft() {
   return (
     <group
       ref={groupRef}
-      position={[ORBIT_X, 0, 0]}
+      position={[
+        INITIAL_TARGET_POSITION.x,
+        INITIAL_TARGET_POSITION.y,
+        INITIAL_TARGET_POSITION.z,
+      ]}
       onClick={handleClick}
     >
       <primitive
         object={scene.clone()}
         scale={0.08}
       />
+      {selectedObject?.id === "SAT-001" && (
+        <mesh rotation={[Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[0.3, 0.35, 32]} />
+          <meshBasicMaterial 
+            color={isTracking && trackingTarget?.id === "SAT-001" ? "#4ade80" : "#facc15"} 
+            side={THREE.DoubleSide}
+            transparent 
+            opacity={0.8} 
+          />
+        </mesh>
+      )}
     </group>
   );
 }

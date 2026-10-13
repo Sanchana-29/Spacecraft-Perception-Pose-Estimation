@@ -6,6 +6,7 @@ import {
   FaBullseye,
   FaCube,
   FaFlagCheckered,
+  FaCheckCircle,
 } from "react-icons/fa";
 
 function MissionTimeline() {
@@ -13,33 +14,27 @@ function MissionTimeline() {
   const events = [
 
     {
-      title: "Mission Started",
-      icon: <FaPlayCircle />,
-      time: "00:00:00",
-    },
-
-    {
-      title: "Detection Started",
+      title: "Target detection acquired",
       icon: <FaCamera />,
-      time: "--:--:--",
+      time: "T+120.2 s",
     },
 
     {
-      title: "Target Selected",
+      title: "Target tracking initiated",
       icon: <FaBullseye />,
-      time: "--:--:--",
+      time: "T+126.8 s",
     },
 
     {
-      title: "Pose Estimated",
+      title: "Pose estimation module ready",
       icon: <FaCube />,
-      time: "--:--:--",
+      time: "T+135.4 s",
     },
 
     {
-      title: "Mission Completed",
-      icon: <FaFlagCheckered />,
-      time: "--:--:--",
+      title: "Telemetry update received",
+      icon: <FaCheckCircle />,
+      time: "T+145.6 s",
     },
 
   ];
@@ -48,7 +43,7 @@ function MissionTimeline() {
 
     <div className="mission-timeline">
 
-      <h2>Mission Timeline</h2>
+      <h2>Mission Events</h2>
 
       <div className="timeline">
 
@@ -90,4 +85,4 @@ function MissionTimeline() {
 
 }
 
-export default MissionTimeline;
+export default MissionTimeline;

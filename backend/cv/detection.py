@@ -18,12 +18,13 @@ def detect_target(image):
         image -> OpenCV image
 
     Output:
-        Detection result with bounding box and confidence.
+        Detection result with multiple bounding boxes and confidence.
     """
 
     if image is None:
         return {
             "detected": False,
+            "detections": [],
             "message": "No image provided"
         }
 
@@ -48,6 +49,7 @@ def detect_target(image):
     if not contours:
         return {
             "detected": False,
+            "detections": [],
             "message": "Target not detected"
         }
 
@@ -59,17 +61,21 @@ def detect_target(image):
     area = width * height
 
     # Basic confidence calculation
-    confidence = min(99.0, max(50.0, area / 100))
+    confidence = min(0.99, max(0.50, area / 10000.0))
 
     return {
         "detected": True,
-        "target_id": "SAT-001",
-        "target_name": "Target Satellite",
-        "bounding_box": {
-            "x": x,
-            "y": y,
-            "width": width,
-            "height": height
-        },
-        "confidence": round(confidence, 2)
+        "detections": [
+            {
+                "id": "SAT-001",
+                "class_name": "Target Satellite",
+                "bounding_box": {
+                    "x": x,
+                    "y": y,
+                    "width": width,
+                    "height": height
+                },
+                "confidence": round(confidence, 4)
+            }
+        ]
     }

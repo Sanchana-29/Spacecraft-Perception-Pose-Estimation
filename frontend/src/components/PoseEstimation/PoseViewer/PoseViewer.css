@@ -1,19 +1,11 @@
 .pose-viewer{
-
     background:#131c2e;
-
     border:1px solid #26334d;
-
     border-radius:12px;
-
     display:flex;
-
     flex-direction:column;
-
     overflow:hidden;
-
-    height:520px;
-
+    min-height: 400px;
 }
 
 .viewer-header{

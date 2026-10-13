@@ -1,25 +1,49 @@
-.pose-page{
-
-    height:100%;
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:18px;
-
-    padding:20px;
-
-    overflow:auto;
-
+.pose-page {
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 20px;
+  overflow-y: auto;
 }
 
-.pose-middle{
+.pose-middle {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr) 350px;
+  grid-template-rows: minmax(0, 1fr);
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
+}
 
-    display:grid;
+.pose-left-col, .pose-right-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+}
 
-    grid-template-columns:260px 1fr 260px;
+/* Compact Overrides to prevent scrolling */
+.pose-middle .pose-pipeline { padding: 12px !important; }
+.pose-middle .pose-pipeline h3 { margin-bottom: 10px !important; }
+.pose-middle .pipeline-list { gap: 6px !important; }
+.pose-middle .pipeline-card { padding: 8px 12px !important; width: 100% !important; max-width: 180px !important; }
+.pose-middle .pipeline-arrow { font-size: 14px !important; }
+.pose-middle .pose-table { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.pose-middle .pose-tabs button { padding: 8px 4px !important; font-size: 11px !important; }
+.pose-middle .pose-content { padding: 8px !important; overflow: hidden; }
+.pose-middle .pose-content td { padding: 6px !important; font-size: 12px !important; }
 
-    gap:18px;
+/* Right side overrides */
+.pose-middle .pose-results { flex: 1; display: flex; flex-direction: column; }
+.pose-middle .results-grid { flex: 1; align-content: stretch; grid-template-rows: repeat(3, minmax(0, 1fr)); }
+.pose-middle .result-card { justify-content: center; min-height: 0; }
 
+.pose-controls {
+  transition: margin-left 0.25s ease;
+}
+
+.layout.sidebar-collapsed .pose-controls {
+  margin-left: 56px;
 }

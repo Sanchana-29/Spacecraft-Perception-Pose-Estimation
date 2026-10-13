@@ -18,17 +18,15 @@ function Detection() {
         <DetectionControls />
 
         <div className="detection-middle">
-
-          <ProcessingPipeline />
-
+          <div className="detection-left-col">
+            <ProcessingPipeline />
+            <DetectionTable />
+          </div>
           <DetectionViewer />
-
-          <DetectionStatistics />
-
+          <div className="detection-right-col">
+            <DetectionStatistics />
+          </div>
         </div>
-
-        <DetectionTable />
-
       </div>
     </Layout>
   );

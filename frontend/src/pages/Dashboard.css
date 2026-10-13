@@ -1,0 +1,8 @@
+.dashboard-status-badge {
+  left: 20px;
+  transition: left 0.25s ease;
+}
+
+.layout.sidebar-collapsed .dashboard-status-badge {
+  left: 76px;
+}

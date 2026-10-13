@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { PerspectiveCamera } from "@react-three/drei";
 import { useSimulation } from "../../context/SimulationContext";
+import { CHASER_ORBIT_X, CHASER_ORBIT_Z } from "../../utils/trajectory";
 
 function ServicerSpacecraft() {
   const spacecraftRef = useRef();
@@ -11,8 +12,8 @@ function ServicerSpacecraft() {
     resetKey,
   } = useSimulation();
 
-  const ORBIT_X = 4.8;
-  const ORBIT_Z = 5.5;
+  const ORBIT_X = CHASER_ORBIT_X;
+  const ORBIT_Z = CHASER_ORBIT_Z;
 
   const handleClick = (event) => {
     event.stopPropagation();
@@ -72,7 +73,7 @@ function ServicerSpacecraft() {
 
     spacecraftRef.current.rotation.set(
       0,
-      angle + Math.PI / 2,
+      angle + Math.PI,
       0
     );
   }, [chaserPosition]);
@@ -94,7 +95,7 @@ function ServicerSpacecraft() {
 
     spacecraftRef.current.rotation.set(
       0,
-      Math.PI / 2,
+      Math.PI,
       0
     );
   }, [resetKey]);

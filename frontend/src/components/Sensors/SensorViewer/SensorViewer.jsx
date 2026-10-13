@@ -7,9 +7,10 @@ import { useSensor } from "../../../context/SensorContext";
 import { useSimulation } from "../../../context/SimulationContext";
 import SensorTargetView from "./SensorTargetView";
 import { getSensorToTargetDistance, SENSOR_CONFIGS } from "./sensorConstants";
+import { INITIAL_CHASER_POSITION, INITIAL_TARGET_POSITION } from "../../../utils/trajectory";
 
 function SensorViewer({ sensorData }) {
-  const { selectedSensor, setCapturedFrame } = useSensor();
+  const { selectedSensor, setCapturedFrame, updateSensorThumbnail } = useSensor();
   const { chaserPosition, targetPosition, missionTime } = useSimulation();
   const navigate = useNavigate();
   const [capturing, setCapturing] = useState(false);
@@ -17,7 +18,20 @@ function SensorViewer({ sensorData }) {
 
   const onGlReady = useCallback((context) => {
     glContextRef.current = context;
-  }, []);
+    if (context?.gl && context?.scene && context?.camera) {
+      setTimeout(() => {
+        try {
+          context.gl.render(context.scene, context.camera);
+          const dataUrl = context.gl.domElement.toDataURL("image/png");
+          if (dataUrl && dataUrl !== "data:,") {
+            updateSensorThumbnail(selectedSensor, dataUrl);
+          }
+        } catch (e) {
+          // ignore transient render errors
+        }
+      }, 300);
+    }
+  }, [selectedSensor, updateSensorThumbnail]);
 
   const sensorInfo = {
     "RGB-D Camera": {
@@ -47,7 +61,8 @@ function SensorViewer({ sensorData }) {
   const distanceVal = getSensorToTargetDistance(
     chaserPosition,
     targetPosition,
-    selectedSensor
+    selectedSensor,
+    selectedSensor === "Stereo Camera" ? "Stereo Left" : null
   );
 
   // ==========================================
@@ -72,6 +87,7 @@ function SensorViewer({ sensorData }) {
       if (!imageData || imageData === "data:,") {
         const canvas =
           document.querySelector("#sensor-main-canvas canvas") ||
+          document.querySelector("#sensor-stereo-left-canvas canvas") ||
           document.querySelector(".sensor-viewer canvas");
 
         if (canvas) {
@@ -95,16 +111,16 @@ function SensorViewer({ sensorData }) {
         sensorType: selectedSensor,
         timestamp: new Date().toISOString(),
         formattedTime: new Date().toLocaleTimeString(),
-        missionTime: Number(missionTime).toFixed(1),
+        missionTime: Number(missionTime || 0).toFixed(1),
         chaserPosition: {
-          x: Number(chaserPosition.x).toFixed(2),
-          y: Number(chaserPosition.y).toFixed(2),
-          z: Number(chaserPosition.z).toFixed(2),
+          x: Number(chaserPosition?.x ?? INITIAL_CHASER_POSITION.x).toFixed(2),
+          y: Number(chaserPosition?.y ?? INITIAL_CHASER_POSITION.y).toFixed(2),
+          z: Number(chaserPosition?.z ?? INITIAL_CHASER_POSITION.z).toFixed(2),
         },
         targetPosition: {
-          x: Number(targetPosition.x).toFixed(2),
-          y: Number(targetPosition.y).toFixed(2),
-          z: Number(targetPosition.z).toFixed(2),
+          x: Number(targetPosition?.x ?? INITIAL_TARGET_POSITION.x).toFixed(2),
+          y: Number(targetPosition?.y ?? INITIAL_TARGET_POSITION.y).toFixed(2),
+          z: Number(targetPosition?.z ?? INITIAL_TARGET_POSITION.z).toFixed(2),
         },
         fov: sensorConfig.fov || 60,
         distance: distanceVal.toFixed(2),

@@ -18,17 +18,15 @@ function PoseEstimation() {
         <PoseControls />
 
         <div className="pose-middle">
-
-          <PosePipeline />
-
+          <div className="pose-left-col">
+            <PosePipeline />
+            <PoseTable />
+          </div>
           <PoseViewer />
-
-          <PoseResults />
-
+          <div className="pose-right-col">
+            <PoseResults />
+          </div>
         </div>
-
-        <PoseTable />
-
       </div>
     </Layout>
   );

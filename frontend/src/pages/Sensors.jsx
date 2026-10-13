@@ -72,12 +72,12 @@ function Sensors() {
             ===================================== */}
 
         <div
+          className="sensor-backend-status"
           style={{
             display: "flex",
             alignItems: "center",
             gap: "8px",
             width: "fit-content",
-            marginLeft: "60px",
             padding: "8px 14px",
             borderRadius: "8px",
             background: "#111a2c",

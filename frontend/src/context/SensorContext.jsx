@@ -1,8 +1,11 @@
 import { createContext, useContext, useState } from "react";
+import { dataURLtoBlob, runDetectionApi, runPoseEstimationApi } from "../services/api";
 
 const SensorContext = createContext();
 
 const STORAGE_KEY = "spacecraft_captured_frame";
+const RESULT_STORAGE_KEY = "spacecraft_detection_result";
+const POSE_STORAGE_KEY = "spacecraft_pose_result";
 
 export function SensorProvider({ children }) {
   const [selectedSensor, setSelectedSensor] = useState("RGB-D Camera");
@@ -16,16 +19,122 @@ export function SensorProvider({ children }) {
     }
   });
 
+  const [detectionResult, setDetectionResultState] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem(RESULT_STORAGE_KEY);
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const [poseResult, setPoseResultState] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem(POSE_STORAGE_KEY);
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const [isDetecting, setIsDetecting] = useState(false);
+  const [detectionError, setDetectionError] = useState(null);
+
+  const [isEstimatingPose, setIsEstimatingPose] = useState(false);
+  const [poseError, setPoseError] = useState(null);
+
+  const [sensorThumbnails, setSensorThumbnails] = useState({});
+
+  const updateSensorThumbnail = (sensorName, imageData) => {
+    if (!sensorName || !imageData) return;
+    setSensorThumbnails((prev) => {
+      if (prev[sensorName] === imageData) return prev;
+      return { ...prev, [sensorName]: imageData };
+    });
+  };
+
   const setCapturedFrame = (frame) => {
     setCapturedFrameState(frame);
+    setDetectionResultState(null);
+    setDetectionError(null);
+    setPoseResultState(null);
+    setPoseError(null);
     try {
       if (frame) {
         sessionStorage.setItem(STORAGE_KEY, JSON.stringify(frame));
       } else {
         sessionStorage.removeItem(STORAGE_KEY);
       }
+      sessionStorage.removeItem(RESULT_STORAGE_KEY);
+      sessionStorage.removeItem(POSE_STORAGE_KEY);
     } catch (err) {
       console.warn("Could not save captured frame to sessionStorage:", err);
+    }
+  };
+
+  const setDetectionResult = (result) => {
+    setDetectionResultState(result);
+    try {
+      if (result) {
+        sessionStorage.setItem(RESULT_STORAGE_KEY, JSON.stringify(result));
+      } else {
+        sessionStorage.removeItem(RESULT_STORAGE_KEY);
+      }
+    } catch (err) {
+      console.warn("Could not save detection result to sessionStorage:", err);
+    }
+  };
+
+  const setPoseResult = (result) => {
+    setPoseResultState(result);
+    try {
+      if (result) {
+        sessionStorage.setItem(POSE_STORAGE_KEY, JSON.stringify(result));
+      } else {
+        sessionStorage.removeItem(POSE_STORAGE_KEY);
+      }
+    } catch (err) {
+      console.warn("Could not save pose result to sessionStorage:", err);
+    }
+  };
+
+  const runDetection = async () => {
+    if (!capturedFrame?.imageData) return;
+
+    setIsDetecting(true);
+    setDetectionError(null);
+
+    try {
+      const blob = dataURLtoBlob(capturedFrame.imageData);
+      const result = await runDetectionApi(blob);
+      setDetectionResult(result);
+      
+      // Auto trigger pose estimation if target is detected
+      if (result?.detected && result.detections?.length > 0) {
+         await runPoseEstimation(result.detections[0].bounding_box);
+      }
+    } catch (err) {
+      console.error("Detection error:", err);
+      setDetectionError(err.message || "Failed to connect to backend Detection API");
+    } finally {
+      setIsDetecting(false);
+    }
+  };
+
+  const runPoseEstimation = async (bbox) => {
+    if (!bbox) return;
+    
+    setIsEstimatingPose(true);
+    setPoseError(null);
+    
+    try {
+      const result = await runPoseEstimationApi(bbox);
+      setPoseResult(result);
+    } catch (err) {
+      console.error("Pose Estimation error:", err);
+      setPoseError(err.message || "Failed to connect to backend Pose API");
+    } finally {
+      setIsEstimatingPose(true);
     }
   };
 
@@ -34,8 +143,20 @@ export function SensorProvider({ children }) {
       value={{
         selectedSensor,
         setSelectedSensor,
+        sensorThumbnails,
+        updateSensorThumbnail,
         capturedFrame,
         setCapturedFrame,
+        detectionResult,
+        setDetectionResult,
+        isDetecting,
+        detectionError,
+        runDetection,
+        poseResult,
+        setPoseResult,
+        isEstimatingPose,
+        poseError,
+        runPoseEstimation
       }}
     >
       {children}

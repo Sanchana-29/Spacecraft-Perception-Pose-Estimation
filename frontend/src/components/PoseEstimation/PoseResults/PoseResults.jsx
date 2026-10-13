@@ -9,49 +9,41 @@ import {
 function PoseResults() {
 
   const results = [
-
     {
       title: "Position X",
-      value: "-- m",
+      value: "12.45 m",
       icon: <FaMapMarkerAlt />,
     },
-
     {
       title: "Position Y",
-      value: "-- m",
+      value: "-3.21 m",
       icon: <FaMapMarkerAlt />,
     },
-
     {
       title: "Position Z",
-      value: "-- m",
+      value: "8.67 m",
       icon: <FaMapMarkerAlt />,
     },
-
     {
       title: "Roll",
-      value: "-- °",
+      value: "14.2 °",
       icon: <FaCompass />,
     },
-
     {
       title: "Pitch",
-      value: "-- °",
+      value: "-8.4 °",
       icon: <FaCompass />,
     },
-
     {
       title: "Yaw",
-      value: "-- °",
+      value: "105.6 °",
       icon: <FaCompass />,
     },
-
     {
       title: "Confidence",
-      value: "-- %",
-      icon: <FaCheckCircle />,
+      value: "96.4 %",
+      icon: <FaCheckCircle style={{ color: "#4CAF50" }} />,
     },
-
   ];
 
   return (

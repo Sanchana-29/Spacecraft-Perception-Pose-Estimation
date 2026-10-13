@@ -1,15 +1,17 @@
-.mission-page{
+.mission-page {
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 20px;
+  overflow-y: auto;
+}
 
-    height:100%;
+.mission-overview {
+  transition: margin-left 0.25s ease;
+}
 
-    display:flex;
-
-    flex-direction:column;
-
-    gap:18px;
-
-    padding:20px;
-
-    overflow:auto;
-
+.layout.sidebar-collapsed .mission-overview {
+  margin-left: 56px;
 }

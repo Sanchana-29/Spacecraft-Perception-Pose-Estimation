@@ -9,7 +9,7 @@ function MissionOverview() {
         <h2>Mission Overview</h2>
 
         <div className="mission-status">
-          🟢 Mission Active
+          🟢 ACTIVE
         </div>
 
       </div>
@@ -18,22 +18,22 @@ function MissionOverview() {
 
         <div className="overview-card">
           <span>Mission Name</span>
-          <h3>Autonomous Rendezvous</h3>
+          <h3>Spacecraft Proximity Operations</h3>
         </div>
 
         <div className="overview-card">
           <span>Mission ID</span>
-          <h3>MSN-001</h3>
+          <h3>STOS-MISSION-001</h3>
         </div>
 
         <div className="overview-card">
-          <span>Operator</span>
-          <h3>SpaceTug</h3>
+          <span>Target ID</span>
+          <h3>SAT-001</h3>
         </div>
 
         <div className="overview-card">
           <span>Mission Time</span>
-          <h3>00:00:00</h3>
+          <h3>T+145.6 s</h3>
         </div>
 
       </div>
@@ -42,4 +42,4 @@ function MissionOverview() {
   );
 }
 
-export default MissionOverview;
+export default MissionOverview;
