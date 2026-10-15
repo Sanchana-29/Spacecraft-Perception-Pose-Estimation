@@ -16,28 +16,28 @@ function PoseTable() {
 
       <div className="pose-tabs">
 
-        <button 
+        <button
           className={activeTab === "matrix" ? "active" : ""}
           onClick={() => setActiveTab("matrix")}
         >
           Pose Matrix
         </button>
 
-        <button 
+        <button
           className={activeTab === "euler" ? "active" : ""}
           onClick={() => setActiveTab("euler")}
         >
           Euler Angles
         </button>
 
-        <button 
+        <button
           className={activeTab === "quaternion" ? "active" : ""}
           onClick={() => setActiveTab("quaternion")}
         >
           Quaternion
         </button>
 
-        <button 
+        <button
           className={activeTab === "relative" ? "active" : ""}
           onClick={() => setActiveTab("relative")}
         >
@@ -141,4 +141,3 @@ function PoseTable() {
 }
 
 export default PoseTable;
-

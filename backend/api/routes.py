@@ -1,4 +1,5 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException
+from typing import Optional
+from fastapi import APIRouter, UploadFile, File, Form, Query, HTTPException
 import cv2
 import numpy as np
 
@@ -35,10 +36,14 @@ def detection():
 
 
 @router.post("/detection/run")
-async def run_detection(file: UploadFile = File(...)):
+async def run_detection(
+    file: UploadFile = File(...),
+    conf: Optional[float] = Form(None),
+    confidence: Optional[float] = Query(None),
+):
     """
     Accepts uploaded sensor frame image, decodes with OpenCV,
-    and runs the target detection pipeline.
+    and runs the YOLOv8n target detection pipeline with confidence threshold.
     """
     try:
         contents = await file.read()
@@ -51,7 +56,12 @@ async def run_detection(file: UploadFile = File(...)):
         if image is None:
             raise HTTPException(status_code=400, detail="Could not decode image")
 
-        result = detect_target(image)
+        # Determine threshold from Form or Query param (fallback to 0.25 default)
+        chosen_conf = conf if conf is not None else confidence
+        if chosen_conf is None:
+            chosen_conf = 0.25
+
+        result = detect_target(image, conf=chosen_conf)
         return result
     except HTTPException as he:
         raise he

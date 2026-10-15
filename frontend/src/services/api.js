@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://127.0.0.1:8000";
+const API_BASE_URL = "http://127.0.0.1:8001";
 
 export async function getSystemStatus() {
   const response = await fetch(`${API_BASE_URL}/api/status`);
@@ -58,14 +58,18 @@ export function dataURLtoBlob(dataurl) {
 /**
  * Sends captured sensor image Blob to FastAPI detection endpoint
  */
-export async function runDetectionApi(imageBlob) {
+export async function runDetectionApi(imageBlob, confidence = 0.25) {
   const formData = new FormData();
   formData.append("file", imageBlob, "captured_frame.png");
+  formData.append("conf", String(confidence));
 
-  const response = await fetch(`${API_BASE_URL}/api/detection/run`, {
-    method: "POST",
-    body: formData,
-  });
+  const response = await fetch(
+    `${API_BASE_URL}/api/detection/run?conf=${encodeURIComponent(confidence)}`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
 
   if (!response.ok) {
     const errorText = await response.text().catch(() => "");

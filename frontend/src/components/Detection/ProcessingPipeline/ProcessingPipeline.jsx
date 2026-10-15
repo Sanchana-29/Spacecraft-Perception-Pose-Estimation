@@ -2,8 +2,8 @@ import "./ProcessingPipeline.css";
 import {
   FaCamera,
   FaImage,
-  FaAdjust,
-  FaDrawPolygon,
+  FaBrain,
+  FaFilter,
   FaCrosshairs,
 } from "react-icons/fa";
 
@@ -14,16 +14,16 @@ function ProcessingPipeline() {
       icon: <FaCamera />,
     },
     {
-      name: "Grayscale Conversion",
+      name: "Image Preprocessing",
       icon: <FaImage />,
     },
     {
-      name: "OpenCV Thresholding",
-      icon: <FaAdjust />,
+      name: "YOLOv8n Inference",
+      icon: <FaBrain />,
     },
     {
-      name: "Contour Extraction",
-      icon: <FaDrawPolygon />,
+      name: "Bounding Box / Confidence Filtering",
+      icon: <FaFilter />,
     },
     {
       name: "Target Selection",

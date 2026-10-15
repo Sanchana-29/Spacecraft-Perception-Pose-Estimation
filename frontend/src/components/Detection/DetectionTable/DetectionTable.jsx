@@ -1,25 +1,49 @@
+
 import "./DetectionTable.css";
 import { useSensor } from "../../../context/SensorContext";
 
 function DetectionTable() {
-  const { detectionResult } = useSensor();
+  const { capturedFrame, detectionResult, isDetecting, detectionError } = useSensor();
 
-  const detections = detectionResult?.detected && Array.isArray(detectionResult.detections) 
-    ? detectionResult.detections.map((det, index) => ({
-        id: det.id || `SAT-00${index + 1}`,
-        class: det.class_name || "Target Satellite",
-        confidence: `${det.confidence * 100}%`,
-        trackId: `TRK-00${index + 1}`,
-        status: "DETECTED",
-        target: "TRUE",
-      }))
-    : [];
+  const detections =
+    detectionResult?.detected &&
+    Array.isArray(detectionResult.detections)
+      ? detectionResult.detections.map((det, index) => {
+          const confidenceStr =
+            typeof det.confidence === "number" && Number.isFinite(det.confidence)
+              ? `${(det.confidence * 100).toFixed(1)}%`
+              : "--";
+
+          return {
+            id: det.id ?? `SAT-${String(index + 1).padStart(3, "0")}`,
+            className: det.class_name ?? "satellite",
+            confidence: confidenceStr,
+            trackId: "--",
+            status: "DETECTED",
+            target: det.class_name ? det.class_name.toUpperCase() : "SATELLITE",
+          };
+        })
+      : [];
+
+  let emptyMessage = "Awaiting Detection (Click RUN DETECTION)";
+
+  if (isDetecting) {
+    emptyMessage = "Detection in progress...";
+  } else if (detectionError) {
+    emptyMessage = `Inference failed: ${detectionError}`;
+  } else if (!capturedFrame) {
+    emptyMessage = "No sensor frame loaded (Capture frame on Sensors page)";
+  } else if (detectionResult && (!detectionResult.detected || detections.length === 0)) {
+    emptyMessage = "No target detected above confidence threshold";
+  }
 
   return (
     <div className="detection-table">
       <div className="table-header">
         <h3>Detected Objects</h3>
-        <span>{detections.length} Object{detections.length === 1 ? "" : "s"}</span>
+        <span>
+          {detections.length} Object{detections.length === 1 ? "" : "s"}
+        </span>
       </div>
 
       <table>
@@ -38,16 +62,14 @@ function DetectionTable() {
           {detections.length === 0 ? (
             <tr>
               <td colSpan="6" className="empty">
-                {detectionResult?.detected === false
-                  ? "Target Not Detected by OpenCV"
-                  : "No Objects Detected (Click [RUN DETECTION])"}
+                {emptyMessage}
               </td>
             </tr>
           ) : (
-            detections.map((item) => (
-              <tr key={item.id}>
+            detections.map((item, index) => (
+              <tr key={`${item.id}-${index}`}>
                 <td>{item.id}</td>
-                <td>{item.class}</td>
+                <td>{item.className}</td>
                 <td>{item.confidence}</td>
                 <td>{item.trackId}</td>
                 <td>{item.status}</td>

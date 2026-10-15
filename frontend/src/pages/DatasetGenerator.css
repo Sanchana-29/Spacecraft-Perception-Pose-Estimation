@@ -1,8 +1,14 @@
 .dataset-generator-page {
-  min-height: 100vh;
+  height: 100%;
+  box-sizing: border-box;
   padding: 24px;
   background: #070d1b;
   color: #e8f1ff;
+  overflow-y: auto;
+}
+
+.layout.sidebar-collapsed .dataset-generator-header {
+  margin-left: 48px;
 }
 
 .dataset-generator-header {

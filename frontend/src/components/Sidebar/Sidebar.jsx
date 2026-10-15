@@ -6,6 +6,7 @@ import {
   FaCamera,
   FaEye,
   FaCube,
+  FaDatabase,
   FaChartLine,
   FaFileAlt,
   FaCog,
@@ -43,6 +44,12 @@ function Sidebar({
       path: "/pose-estimation",
       icon: <FaCube />,
       label: "Pose Estimation",
+    },
+
+    {
+      path: "/dataset-generator",
+      icon: <FaDatabase />,
+      label: "Dataset Generator",
     },
 
     {

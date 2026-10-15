@@ -3,7 +3,15 @@ import { FaPlay, FaSpinner } from "react-icons/fa";
 import { useSensor } from "../../../context/SensorContext";
 
 function DetectionControls() {
-  const { capturedFrame, isDetecting, runDetection } = useSensor();
+  const {
+    capturedFrame,
+    isDetecting,
+    runDetection,
+    confidenceThreshold,
+    setConfidenceThreshold,
+  } = useSensor();
+
+  const percentage = Math.round(confidenceThreshold * 100);
 
   return (
     <div className="detection-controls">
@@ -11,17 +19,18 @@ function DetectionControls() {
         <label>Confidence Threshold</label>
         <input
           type="range"
-          min="0"
+          min="1"
           max="100"
-          defaultValue="80"
+          value={percentage}
+          onChange={(e) => setConfidenceThreshold(Number(e.target.value) / 100)}
         />
-        <span>80%</span>
+        <span>{percentage}%</span>
       </div>
 
       <div className="control-group">
         <label>Detector Pipeline</label>
         <div style={{ color: "white", fontSize: "13px", padding: "8px 0", fontWeight: "500" }}>
-          OpenCV Detector
+         YOLOv8n Satellite Detector
         </div>
       </div>
 
@@ -35,9 +44,9 @@ function DetectionControls() {
       <div className="control-group action-group">
         <button
           className={`run-detection-btn ${isDetecting ? "running" : ""}`}
-          onClick={runDetection}
+          onClick={() => runDetection(confidenceThreshold)}
           disabled={!capturedFrame || isDetecting}
-          title={!capturedFrame ? "Capture a frame on Sensors page first" : "Run OpenCV target detection"}
+          title={!capturedFrame ? "Capture a frame on Sensors page first" : "Run YOLOv8n satellite detection"}
         >
           {isDetecting ? (
             <>
